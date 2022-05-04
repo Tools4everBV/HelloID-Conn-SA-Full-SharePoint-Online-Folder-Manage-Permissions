@@ -1,0 +1,34 @@
+[
+    {
+        "key":  "createdDateTime",
+        "type":  0
+    },
+    {
+        "key":  "id",
+        "type":  0
+    },
+    {
+        "key":  "lastModifiedDateTime",
+        "type":  0
+    },
+    {
+        "key":  "name",
+        "type":  0
+    },
+    {
+        "key":  "webUrl",
+        "type":  0
+    },
+    {
+        "key":  "displayName",
+        "type":  0
+    },
+    {
+        "key":  "siteCollection",
+        "type":  0
+    },
+    {
+        "key":  "root",
+        "type":  0
+    }
+]

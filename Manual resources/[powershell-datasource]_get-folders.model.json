@@ -1,0 +1,18 @@
+[
+    {
+        "key":  "id",
+        "type":  0
+    },
+    {
+        "key":  "name",
+        "type":  0
+    },
+    {
+        "key":  "webUrl",
+        "type":  0
+    },
+    {
+        "key":  "folder",
+        "type":  0
+    }
+]

@@ -1,0 +1,10 @@
+[
+    {
+        "description":  null,
+        "translateDescription":  false,
+        "inputFieldType":  1,
+        "key":  "selectedSite",
+        "type":  0,
+        "options":  1
+    }
+]

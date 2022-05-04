@@ -1,0 +1,198 @@
+[
+    {
+        "key":  "dropDownSites",
+        "templateOptions":  {
+                                "label":  "Select Site",
+                                "required":  true,
+                                "useObjects":  false,
+                                "useDataSource":  true,
+                                "useFilter":  true,
+                                "options":  [
+                                                "Option 1",
+                                                "Option 2",
+                                                "Option 3"
+                                            ],
+                                "dataSourceConfig":  {
+                                                         "dataSourceGuid":  "$dataSourceGuid_0",
+                                                         "input":  {
+                                                                       "propertyInputs":  [
+
+                                                                                          ]
+                                                                   }
+                                                     },
+                                "valueField":  "id",
+                                "textField":  "displayName"
+                            },
+        "type":  "dropdown",
+        "summaryVisibility":  "Show",
+        "textOrLabel":  "text",
+        "requiresTemplateOptions":  true,
+        "requiresKey":  true,
+        "requiresDataSource":  false
+    },
+    {
+        "key":  "dropDownFolder",
+        "templateOptions":  {
+                                "label":  "Select Folder",
+                                "useObjects":  false,
+                                "useDataSource":  true,
+                                "useFilter":  true,
+                                "options":  [
+                                                "Option 1",
+                                                "Option 2",
+                                                "Option 3"
+                                            ],
+                                "dataSourceConfig":  {
+                                                         "dataSourceGuid":  "$dataSourceGuid_1",
+                                                         "input":  {
+                                                                       "propertyInputs":  [
+                                                                                              {
+                                                                                                  "propertyName":  "selectedSite",
+                                                                                                  "otherFieldValue":  {
+                                                                                                                          "otherFieldKey":  "dropDownSites"
+                                                                                                                      }
+                                                                                              }
+                                                                                          ]
+                                                                   }
+                                                     },
+                                "valueField":  "id",
+                                "textField":  "name",
+                                "required":  true
+                            },
+        "hideExpression":  "!model[\"dropDownSites\"]",
+        "type":  "dropdown",
+        "summaryVisibility":  "Show",
+        "textOrLabel":  "text",
+        "requiresTemplateOptions":  true,
+        "requiresKey":  true,
+        "requiresDataSource":  false
+    },
+    {
+        "key":  "dualListRead",
+        "templateOptions":  {
+                                "label":  "Read Permissions",
+                                "required":  false,
+                                "filterable":  true,
+                                "useDataSource":  true,
+                                "dualList":  {
+                                                 "options":  [
+                                                                 {
+                                                                     "guid":  "75ea2890-88f8-4851-b202-626123054e14",
+                                                                     "Name":  "Apple"
+                                                                 },
+                                                                 {
+                                                                     "guid":  "0607270d-83e2-4574-9894-0b70011b663f",
+                                                                     "Name":  "Pear"
+                                                                 },
+                                                                 {
+                                                                     "guid":  "1ef6fe01-3095-4614-a6db-7c8cd416ae3b",
+                                                                     "Name":  "Orange"
+                                                                 }
+                                                             ],
+                                                 "optionKeyProperty":  "id",
+                                                 "optionDisplayProperty":  "userPrincipalName",
+                                                 "labelLeft":  "All Users",
+                                                 "labelRight":  "Assigned Users"
+                                             },
+                                "destinationDataSourceConfig":  {
+                                                                    "dataSourceGuid":  "$dataSourceGuid_2",
+                                                                    "input":  {
+                                                                                  "propertyInputs":  [
+                                                                                                         {
+                                                                                                             "propertyName":  "selectedSite",
+                                                                                                             "otherFieldValue":  {
+                                                                                                                                     "otherFieldKey":  "dropDownSites"
+                                                                                                                                 }
+                                                                                                         },
+                                                                                                         {
+                                                                                                             "propertyName":  "selectedFolder",
+                                                                                                             "otherFieldValue":  {
+                                                                                                                                     "otherFieldKey":  "dropDownFolder"
+                                                                                                                                 }
+                                                                                                         }
+                                                                                                     ]
+                                                                              }
+                                                                },
+                                "dataSourceConfig":  {
+                                                         "dataSourceGuid":  "$dataSourceGuid_3",
+                                                         "input":  {
+                                                                       "propertyInputs":  [
+
+                                                                                          ]
+                                                                   }
+                                                     }
+                            },
+        "hideExpression":  "!model[\"dropDownFolder\"]",
+        "type":  "duallist",
+        "summaryVisibility":  "Show",
+        "sourceDataSourceIdentifierSuffix":  "source-datasource",
+        "destinationDataSourceIdentifierSuffix":  "destination-datasource",
+        "requiresTemplateOptions":  true,
+        "requiresKey":  true,
+        "requiresDataSource":  false
+    },
+    {
+        "key":  "dualListWrite",
+        "templateOptions":  {
+                                "label":  "Write Permissions",
+                                "required":  false,
+                                "filterable":  true,
+                                "useDataSource":  true,
+                                "dualList":  {
+                                                 "options":  [
+                                                                 {
+                                                                     "guid":  "75ea2890-88f8-4851-b202-626123054e14",
+                                                                     "Name":  "Apple"
+                                                                 },
+                                                                 {
+                                                                     "guid":  "0607270d-83e2-4574-9894-0b70011b663f",
+                                                                     "Name":  "Pear"
+                                                                 },
+                                                                 {
+                                                                     "guid":  "1ef6fe01-3095-4614-a6db-7c8cd416ae3b",
+                                                                     "Name":  "Orange"
+                                                                 }
+                                                             ],
+                                                 "optionKeyProperty":  "id",
+                                                 "optionDisplayProperty":  "userPrincipalName",
+                                                 "labelLeft":  "All Users",
+                                                 "labelRight":  "Assigned Users"
+                                             },
+                                "destinationDataSourceConfig":  {
+                                                                    "dataSourceGuid":  "$dataSourceGuid_4",
+                                                                    "input":  {
+                                                                                  "propertyInputs":  [
+                                                                                                         {
+                                                                                                             "propertyName":  "selectedFolder",
+                                                                                                             "otherFieldValue":  {
+                                                                                                                                     "otherFieldKey":  "dropDownFolder"
+                                                                                                                                 }
+                                                                                                         },
+                                                                                                         {
+                                                                                                             "propertyName":  "selectedSite",
+                                                                                                             "otherFieldValue":  {
+                                                                                                                                     "otherFieldKey":  "dropDownSites"
+                                                                                                                                 }
+                                                                                                         }
+                                                                                                     ]
+                                                                              }
+                                                                },
+                                "dataSourceConfig":  {
+                                                         "dataSourceGuid":  "$dataSourceGuid_5",
+                                                         "input":  {
+                                                                       "propertyInputs":  [
+
+                                                                                          ]
+                                                                   }
+                                                     }
+                            },
+        "hideExpression":  "!model[\"dropDownFolder\"]",
+        "type":  "duallist",
+        "summaryVisibility":  "Show",
+        "sourceDataSourceIdentifierSuffix":  "source-datasource",
+        "destinationDataSourceIdentifierSuffix":  "destination-datasource",
+        "requiresTemplateOptions":  true,
+        "requiresKey":  true,
+        "requiresDataSource":  false
+    }
+]

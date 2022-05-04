@@ -1,0 +1,26 @@
+[
+    {
+        "key":  "id",
+        "type":  0
+    },
+    {
+        "key":  "userPrincipalName",
+        "type":  0
+    },
+    {
+        "key":  "displayName",
+        "type":  0
+    },
+    {
+        "key":  "department",
+        "type":  0
+    },
+    {
+        "key":  "jobTitle",
+        "type":  0
+    },
+    {
+        "key":  "companyName",
+        "type":  0
+    }
+]

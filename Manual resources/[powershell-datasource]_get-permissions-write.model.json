@@ -1,0 +1,14 @@
+[
+    {
+        "key":  "id",
+        "type":  0
+    },
+    {
+        "key":  "userPrincipalName",
+        "type":  0
+    },
+    {
+        "key":  "displayName",
+        "type":  0
+    }
+]
