@@ -85,6 +85,7 @@ if (($assignedRead | Measure-Object).Count -eq 0)
                 $ainviteread = Invoke-RestMethod -uri "https://graph.microsoft.com/v1.0/sites/$siteid/drive/items/$folderid/invite" -Method POST -body ($bodyinviteread | ConvertTo-Json) -Headers $headers
                 
                 Write-Information "Read Group invited to folder"
+                break
             }
             catch {
                 Start-Sleep -Seconds 20
@@ -132,6 +133,7 @@ if (($assignedWrite | Measure-Object).Count -eq 0)
                 $ainviteread = Invoke-RestMethod -uri "https://graph.microsoft.com/v1.0/sites/$siteid/drive/items/$folderid/invite" -Method POST -body ($bodyinvitewrite | ConvertTo-Json) -Headers $headers
                 
                 Write-Information "Write Group invited to folder"
+                break
             }
             catch {
                 Start-Sleep -Seconds 20
@@ -192,11 +194,9 @@ if ($groupreadfound)
                 $response = Invoke-RestMethod -Method POST -Uri $addGroupMembershipUri -Body $body -Headers $headers -Verbose:$false
             }
     
-            HID-Write-Status -Message "Finished adding AzureAD user [$userPrincipalName] to AzureAD groups $($groupsToAddJson | ConvertTo-Json)" -Event Success
-            HID-Write-Summary -Message "Successfully added AzureAD user [$userPrincipalName] to AzureAD groups" -Event Success
+            Write-Information "Finished adding AzureAD users [$($readPermissionsAdd | ConvertTo-Json)] to AzureAD group [$($bodygroupwrite.displayName)]"
         } catch {
-            HID-Write-Status -Message "Could not add AzureAD user [$userPrincipalName] to AzureAD groups $($groupsToAddJson | ConvertTo-Json). Error: $($_.Exception.Message)" -Event Error
-            HID-Write-Summary -Message "Failed to add AzureAD user [$userPrincipalName] to AzureAD groups" -Event Failed
+            Write-Error "Could not add AzureAD users [$($readPermissionsAdd | ConvertTo-Json)] to AzureAD group [$($bodygroupwrite.displayName)]. Error: $($_.Exception.Message)"
         }
     }
     if($readPermissionsRemove -ne "[]"){
@@ -216,11 +216,9 @@ if ($groupreadfound)
                 $response = Invoke-RestMethod -Method DELETE -Uri $addGroupMembershipUri -Body $body -Headers $headers -Verbose:$false
             }
     
-            HID-Write-Status -Message "Finished adding AzureAD user [$userPrincipalName] to AzureAD groups $($groupsToAddJson | ConvertTo-Json)" -Event Success
-            HID-Write-Summary -Message "Successfully added AzureAD user [$userPrincipalName] to AzureAD groups" -Event Success
+            Write-Information "Finished removing AzureAD users [$($readPermissionsRemove | ConvertTo-Json)] from AzureAD group [$($bodygroupwrite.displayName)]"
         } catch {
-            HID-Write-Status -Message "Could not add AzureAD user [$userPrincipalName] to AzureAD groups $($groupsToAddJson | ConvertTo-Json). Error: $($_.Exception.Message)" -Event Error
-            HID-Write-Summary -Message "Failed to add AzureAD user [$userPrincipalName] to AzureAD groups" -Event Failed
+            Write-Error "Could not remove AzureAD users [$($readPermissionsRemove | ConvertTo-Json)] from AzureAD group [$($bodygroupwrite.displayName)]. Error: $($_.Exception.Message)"
         }
     }
 }
