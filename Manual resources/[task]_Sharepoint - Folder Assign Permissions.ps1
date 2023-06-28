@@ -36,6 +36,18 @@ try {
 } catch {
     $errorDetailsMessage = ($_.ErrorDetails.Message | ConvertFrom-Json).error.message
     Write-Error ("Error searching for AzureAD Groups. Error: $($_.Exception.Message)" + $errorDetailsMessage)
+
+    $Log = @{
+        Action            = "SearchGroup" # optional. ENUM (undefined = default) 
+        System            = "Sharepoint" # optional (free format text) 
+        Message           = "Error searching for AzureAD Groups. Error: $($_.Exception.Message)" + $errorDetailsMessage # required (free format text) 
+        IsError           = $true # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+        TargetDisplayName = $sitename # optional (free format text) 
+        TargetIdentifier  = $newfoldername # optional (free format text) 
+    }
+
+    #send result back  
+    Write-Information -Tags "Audit" -MessageData $log
 }
 
 $grantedWrite = ((Invoke-RestMethod -Uri ($baseSearchUri + "v1.0/sites/$siteid/drive/items/$folderid/permissions") -Method Get -Headers $headers -Verbose:$false).Value | where {$_.roles -contains "Write"}).GrantedTo
@@ -65,10 +77,33 @@ if (($assignedRead | Measure-Object).Count -eq 0)
         }
         $aread = Invoke-RestMethod -uri "https://graph.microsoft.com/v1.0/groups" -Method POST -body ($bodygroupread | ConvertTo-Json) -Headers $headers
         Write-Information "Read Group created for folder"
-        $readcreated = $true
+
+        $Log = @{
+            Action            = "CreateGroup" # optional. ENUM (undefined = default) 
+            System            = "Sharepoint" # optional (free format text) 
+            Message           = "Successfully created read group for folder:  [$($foldername)]" # required (free format text) 
+            IsError           = $false # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+            TargetDisplayName = $sitename # optional (free format text) 
+            TargetIdentifier  = $newfoldername # optional (free format text) 
+    }
+    #send result back  
+    Write-Information -Tags "Audit" -MessageData $log
+
+    $readcreated = $true
     }
     catch {
         Write-Error "Failed Create Read Group for $folderid"
+
+        $Log = @{
+            Action            = "CreateGroup" # optional. ENUM (undefined = default) 
+            System            = "Sharepoint" # optional (free format text) 
+            Message           = "Failed Create Read Group for $folderid" # required (free format text) 
+            IsError           = $true # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+            TargetDisplayName = $sitename # optional (free format text) 
+            TargetIdentifier  = $folderid # optional (free format text) 
+        }
+        #send result back  
+        Write-Information -Tags "Audit" -MessageData $log
     }
     
     if ($readcreated)
@@ -85,7 +120,18 @@ if (($assignedRead | Measure-Object).Count -eq 0)
                 $ainviteread = Invoke-RestMethod -uri "https://graph.microsoft.com/v1.0/sites/$siteid/drive/items/$folderid/invite" -Method POST -body ($bodyinviteread | ConvertTo-Json) -Headers $headers
                 
                 Write-Information "Read Group invited to folder"
+                $Log = @{
+                    Action            = "CreateGroup" # optional. ENUM (undefined = default) 
+                    System            = "Sharepoint" # optional (free format text) 
+                    Message           = "Read Group invited to folder:  [$($foldername)]" # required (free format text) 
+                    IsError           = $false # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+                    TargetDisplayName = $sitename # optional (free format text) 
+                    TargetIdentifier  = $newfoldername # optional (free format text) 
+                }
+                #send result back  
+                Write-Information -Tags "Audit" -MessageData $log
                 break
+            
             }
             catch {
                 Start-Sleep -Seconds 20
@@ -113,10 +159,33 @@ if (($assignedWrite | Measure-Object).Count -eq 0)
         }
         $awrite = Invoke-RestMethod -uri "https://graph.microsoft.com/v1.0/groups" -Method POST -body ($bodygroupread | ConvertTo-Json) -Headers $headers
         Write-Information "Write Group created for folder"
+
+        $Log = @{
+            Action            = "CreateGroup" # optional. ENUM (undefined = default) 
+            System            = "Sharepoint" # optional (free format text) 
+            Message           = "Successfully created write group for folder:  [$($foldername)]" # required (free format text) 
+            IsError           = $false # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+            TargetDisplayName = $sitename # optional (free format text) 
+            TargetIdentifier  = $newfoldername # optional (free format text) 
+        }
+        #send result back  
+        Write-Information -Tags "Audit" -MessageData $log
+
         $writecreated = $true
     }
     catch {
         Write-Error "Failed Create Write Group for $folderid"
+
+        $Log = @{
+            Action            = "CreateGroup" # optional. ENUM (undefined = default) 
+            System            = "Sharepoint" # optional (free format text) 
+            Message           = "Failed Create Write Group for $folderid" # required (free format text) 
+            IsError           = $true # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+            TargetDisplayName = $sitename # optional (free format text) 
+            TargetIdentifier  = $folderid # optional (free format text) 
+        }
+        #send result back  
+        Write-Information -Tags "Audit" -MessageData $log
     }
     
     if ($writecreated)
@@ -133,6 +202,16 @@ if (($assignedWrite | Measure-Object).Count -eq 0)
                 $ainviteread = Invoke-RestMethod -uri "https://graph.microsoft.com/v1.0/sites/$siteid/drive/items/$folderid/invite" -Method POST -body ($bodyinvitewrite | ConvertTo-Json) -Headers $headers
                 
                 Write-Information "Write Group invited to folder"
+                $Log = @{
+                    Action            = "CreateGroup" # optional. ENUM (undefined = default) 
+                    System            = "Sharepoint" # optional (free format text) 
+                    Message           = "Write Group invited to folder:  [$($foldername)]" # required (free format text) 
+                    IsError           = $false # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+                    TargetDisplayName = $sitename # optional (free format text) 
+                    TargetIdentifier  = $newfoldername # optional (free format text) 
+                }
+                #send result back  
+                Write-Information -Tags "Audit" -MessageData $log
                 break
             }
             catch {
@@ -158,8 +237,29 @@ if ($groupreadfound)
             }
     
             Write-Information "Finished adding AzureAD users [$($readPermissionsAdd | ConvertTo-Json)] to AzureAD group [$($bodygroupwrite.displayName)]"
+            $Log = @{
+                Action            = "AddMembers" # optional. ENUM (undefined = default) 
+                System            = "Sharepoint" # optional (free format text) 
+                Message           = "Finished adding AzureAD users [$($readPermissionsAdd | ConvertTo-Json)] to AzureAD group [$($bodygroupwrite.displayName)]" # required (free format text) 
+                IsError           = $false # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+                TargetDisplayName = $sitename # optional (free format text) 
+                TargetIdentifier  = $foldername # optional (free format text) 
+            }
+            #send result back  
+            Write-Information -Tags "Audit" -MessageData $log
         } catch {
             Write-Error "Could not add AzureAD users [$($readPermissionsAdd | ConvertTo-Json)] to AzureAD group [$($bodygroupwrite.displayName)]. Error: $($_.Exception.Message)"
+        
+            $Log = @{
+                Action            = "AddMembers" # optional. ENUM (undefined = default) 
+                System            = "Sharepoint" # optional (free format text) 
+                Message           = "Could not add AzureAD users [$($readPermissionsAdd | ConvertTo-Json)] to AzureAD group [$($bodygroupwrite.displayName)]. Error: $($_.Exception.Message)" # required (free format text) 
+                IsError           = $true # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+                TargetDisplayName = $sitename # optional (free format text) 
+                TargetIdentifier  = $newfoldername # optional (free format text) 
+            }
+            #send result back  
+            Write-Information -Tags "Audit" -MessageData $log
         }
     }
     if($readPermissionsRemove -ne $null){
@@ -171,8 +271,32 @@ if ($groupreadfound)
             }
     
             Write-Information "Finished removing AzureAD users [$($readPermissionsRemove | ConvertTo-Json)] from AzureAD group [$($bodygroupwrite.displayName)]"
+
+            $Log = @{
+                Action            = "RemoveMembers" # optional. ENUM (undefined = default) 
+                System            = "Sharepoint" # optional (free format text) 
+                Message           = "Finished removing AzureAD users [$($readPermissionsRemove | ConvertTo-Json)] from AzureAD group [$($bodygroupwrite.displayName)]" # required (free format text) 
+                IsError           = $false # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+                TargetDisplayName = $sitename # optional (free format text) 
+                TargetIdentifier  = $foldername # optional (free format text) 
+            }
+            #send result back  
+            Write-Information -Tags "Audit" -MessageData $log
+        
         } catch {
             Write-Error "Could not remove AzureAD users [$($readPermissionsRemove | ConvertTo-Json)] from AzureAD group [$($bodygroupwrite.displayName)]. Error: $($_.Exception.Message)"
+        
+            $Log = @{
+                Action            = "RemoveMembers" # optional. ENUM (undefined = default) 
+                System            = "Sharepoint" # optional (free format text) 
+                Message           = "Could not remove AzureAD users [$($readPermissionsRemove | ConvertTo-Json)] from AzureAD group [$($bodygroupwrite.displayName)]. Error: $($_.Exception.Message)" # required (free format text) 
+                IsError           = $true # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+                TargetDisplayName = $sitename # optional (free format text) 
+                TargetIdentifier  = $newfoldername # optional (free format text) 
+            }
+            #send result back  
+            Write-Information -Tags "Audit" -MessageData $log
+        
         }
     }
     if($readPermissionsAdd -ne "[]"){
@@ -195,8 +319,32 @@ if ($groupreadfound)
             }
     
             Write-Information "Finished adding AzureAD users [$($readPermissionsAdd | ConvertTo-Json)] to AzureAD group [$($bodygroupwrite.displayName)]"
+        
+            $Log = @{
+                Action            = "AddMembers" # optional. ENUM (undefined = default) 
+                System            = "Sharepoint" # optional (free format text) 
+                Message           = "Finished adding AzureAD users [$($readPermissionsAdd | ConvertTo-Json)] to AzureAD group [$($bodygroupwrite.displayName)]" # required (free format text) 
+                IsError           = $false # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+                TargetDisplayName = $sitename # optional (free format text) 
+                TargetIdentifier  = $foldername # optional (free format text) 
+            }
+            #send result back  
+            Write-Information -Tags "Audit" -MessageData $log
+
         } catch {
             Write-Error "Could not add AzureAD users [$($readPermissionsAdd | ConvertTo-Json)] to AzureAD group [$($bodygroupwrite.displayName)]. Error: $($_.Exception.Message)"
+
+            $Log = @{
+                Action            = "AddMembers" # optional. ENUM (undefined = default) 
+                System            = "Sharepoint" # optional (free format text) 
+                Message           = "Could not add AzureAD users [$($readPermissionsAdd | ConvertTo-Json)] to AzureAD group [$($bodygroupwrite.displayName)]. Error: $($_.Exception.Message)" # required (free format text) 
+                IsError           = $true # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+                TargetDisplayName = $sitename # optional (free format text) 
+                TargetIdentifier  = $newfoldername # optional (free format text) 
+            }
+            #send result back  
+            Write-Information -Tags "Audit" -MessageData $log
+
         }
     }
     if($readPermissionsRemove -ne "[]"){
@@ -217,8 +365,32 @@ if ($groupreadfound)
             }
     
             Write-Information "Finished removing AzureAD users [$($readPermissionsRemove | ConvertTo-Json)] from AzureAD group [$($bodygroupwrite.displayName)]"
+
+            $Log = @{
+                Action            = "RemoveMembers" # optional. ENUM (undefined = default) 
+                System            = "Sharepoint" # optional (free format text) 
+                Message           = "Finished removing AzureAD users [$($readPermissionsRemove | ConvertTo-Json)] from AzureAD group [$($bodygroupwrite.displayName)]" # required (free format text) 
+                IsError           = $false # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+                TargetDisplayName = $sitename # optional (free format text) 
+                TargetIdentifier  = $foldername # optional (free format text) 
+            }
+            #send result back  
+            Write-Information -Tags "Audit" -MessageData $log
+        
         } catch {
             Write-Error "Could not remove AzureAD users [$($readPermissionsRemove | ConvertTo-Json)] from AzureAD group [$($bodygroupwrite.displayName)]. Error: $($_.Exception.Message)"
+
+            $Log = @{
+                Action            = "RemoveMembers" # optional. ENUM (undefined = default) 
+                System            = "Sharepoint" # optional (free format text) 
+                Message           = "Could not remove AzureAD users [$($readPermissionsRemove | ConvertTo-Json)] from AzureAD group [$($bodygroupwrite.displayName)]. Error: $($_.Exception.Message)" # required (free format text) 
+                IsError           = $true # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+                TargetDisplayName = $sitename # optional (free format text) 
+                TargetIdentifier  = $newfoldername # optional (free format text) 
+            }
+            #send result back  
+            Write-Information -Tags "Audit" -MessageData $log
+        
         }
     }
 }
@@ -234,8 +406,32 @@ if ($groupwritefound)
             }
     
             Write-Information "Finished adding AzureAD users [$($writePermissionsAdd | ConvertTo-Json)] to AzureAD group [$($bodygroupwrite.displayName)]"
+            
+            $Log = @{
+                Action            = "AddMembers" # optional. ENUM (undefined = default) 
+                System            = "Sharepoint" # optional (free format text) 
+                Message           = "Finished adding AzureAD users [$($writePermissionsAdd | ConvertTo-Json)] to AzureAD group [$($bodygroupwrite.displayName)]" # required (free format text) 
+                IsError           = $false # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+                TargetDisplayName = $sitename # optional (free format text) 
+                TargetIdentifier  = $foldername # optional (free format text) 
+            }
+            #send result back  
+            Write-Information -Tags "Audit" -MessageData $log
+        
         } catch {
             Write-Error "Could not add AzureAD users [$($writePermissionsAdd | ConvertTo-Json)] to AzureAD group [$($bodygroupwrite.displayName)]. Error: $($_.Exception.Message)"
+        
+            $Log = @{
+                Action            = "AddMembers" # optional. ENUM (undefined = default) 
+                System            = "Sharepoint" # optional (free format text) 
+                Message           = "Could not add AzureAD users [$($writePermissionsAdd | ConvertTo-Json)] to AzureAD group [$($bodygroupwrite.displayName)]. Error: $($_.Exception.Message)" # required (free format text) 
+                IsError           = $true # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+                TargetDisplayName = $sitename # optional (free format text) 
+                TargetIdentifier  = $newfoldername # optional (free format text) 
+            }
+            #send result back  
+            Write-Information -Tags "Audit" -MessageData $log
+
         }
     }
     if($writePermissionsRemove -ne $null){
@@ -247,8 +443,33 @@ if ($groupwritefound)
             }
     
             Write-Information "Finished removing AzureAD users [$($writePermissionsRemove | ConvertTo-Json)] from AzureAD group [$($bodygroupwrite.displayName)]"
+        
+            $Log = @{
+                Action            = "RemoveMembers" # optional. ENUM (undefined = default) 
+                System            = "Sharepoint" # optional (free format text) 
+                Message           = "Finished removing AzureAD users [$($writePermissionsRemove | ConvertTo-Json)] from AzureAD group [$($bodygroupwrite.displayName)]" # required (free format text) 
+                IsError           = $false # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+                TargetDisplayName = $sitename # optional (free format text) 
+                TargetIdentifier  = $foldername # optional (free format text) 
+            }
+            #send result back  
+            Write-Information -Tags "Audit" -MessageData $log
+
+
         } catch {
             Write-Error "Could not remove AzureAD users [$($writePermissionsRemove | ConvertTo-Json)] from AzureAD group [$($bodygroupwrite.displayName)]. Error: $($_.Exception.Message)"
+        
+            $Log = @{
+                Action            = "RemoveMembers" # optional. ENUM (undefined = default) 
+                System            = "Sharepoint" # optional (free format text) 
+                Message           = "Could not remove AzureAD users [$($writePermissionsRemove | ConvertTo-Json)] from AzureAD group [$($bodygroupwrite.displayName)]. Error: $($_.Exception.Message)" # required (free format text) 
+                IsError           = $true # optional. Elastic reporting purposes only. (default = $false. $true = Executed action returned an error) 
+                TargetDisplayName = $sitename # optional (free format text) 
+                TargetIdentifier  = $newfoldername # optional (free format text) 
+            }
+            #send result back  
+            Write-Information -Tags "Audit" -MessageData $log
+        
         }
     }
 }
